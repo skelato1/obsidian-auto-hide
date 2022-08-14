@@ -45,8 +45,8 @@ export default class AutoHidePlugin extends Plugin {
 	init() {
 		this.leftSplit = this.app.workspace.leftSplit;
 		this.rightSplit = this.app.workspace.rightSplit;
-		this.leftRibbonEl = this.app.workspace.leftRibbon.containerEl;
-		this.rightRibbonEl = this.app.workspace.rightRibbon.containerEl;
+		this.leftRibbonEl = (this.app.workspace.leftRibbon as any).containerEl;
+		this.rightRibbonEl = (this.app.workspace.rightRibbon as any).containerEl;
 		this.contentEl = document.getElementsByClassName('view-content')[0] as HTMLElement;
 		this.noteTitleEl = document.getElementsByClassName('view-header-title-container')[0] as HTMLElement;
 	}
@@ -61,7 +61,8 @@ export default class AutoHidePlugin extends Plugin {
 		// Click on the blank area of leftRibbonEl to expand the left sidebar (Optional).
 		this.registerDomEvent(this.leftRibbonEl, 'click', (evt: MouseEvent) => {
 			if(this.settings.expandSidebar_onClickRibbon){
-				if(evt.target.ariaLabel == null){ // If clicked on the blank area, this property will be null. MAYBE.
+				console.log(evt);
+				if(evt.target ==  this.leftRibbonEl){
 					if(this.leftSplit.collapsed == true) this.leftSplit.expand();
 				}
 			}
@@ -69,7 +70,7 @@ export default class AutoHidePlugin extends Plugin {
 		// Click on the blank area of rightRibbonEl to expand the right sidebar (Optional).
 		this.registerDomEvent(this.rightRibbonEl, 'click', (evt: MouseEvent) => {
 			if(this.settings.expandSidebar_onClickRibbon){
-				if(evt.target.ariaLabel == null){
+				if(evt.target == this.rightRibbonEl){
 					if(this.rightSplit.collapsed == true) this.rightSplit.expand();
 				}
 			}
