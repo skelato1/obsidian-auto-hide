@@ -1,7 +1,7 @@
 {
 	"id": "obsidian-auto-hide",
 	"name": "Auto Hide Plugin",
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"minAppVersion": "0.15.0",
 	"description": "Hide sidebars automatically when clicked editor/viewer panel.",
 	"author": "skelato1",
