@@ -1,15 +1,13 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, Workspace, WorkspaceRibbon, WorkspaceRoot, WorkspaceSidedock } from 'obsidian';
-
-// Remember to rename these classes and interfaces!
+import { App, Plugin, PluginSettingTab, Setting, WorkspaceSidedock } from 'obsidian';
 
 interface AutoHideSettings {
-	openLeftSplitOnClickSideBar: boolean;
-	openLeftSplitOnClickTitleBar: boolean;
+	expandSidebar_onClickRibbon: boolean;
+	expandSidebar_onClickNoteTitle: boolean;
 }
 
 const DEFAULT_SETTINGS: AutoHideSettings = {
-	openLeftSplitOnClickSideBar: false,
-	openLeftSplitOnClickTitleBar: false
+	expandSidebar_onClickRibbon: false,
+	expandSidebar_onClickNoteTitle: false
 }
 
 export default class AutoHidePlugin extends Plugin {
@@ -19,12 +17,11 @@ export default class AutoHidePlugin extends Plugin {
 	leftRibbonEl: HTMLElement;
 	rightRibbonEl: HTMLElement;
 	contentEl: HTMLElement;
-	titleBarEl: HTMLElement;
+	noteTitleEl: HTMLElement;
 
 	async onload() {
 		await this.loadSettings();
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new SampleSettingTab(this.app, this));
 
 		this.app.workspace.onLayoutReady(() => {
@@ -51,37 +48,36 @@ export default class AutoHidePlugin extends Plugin {
 		this.leftRibbonEl = this.app.workspace.leftRibbon.containerEl;
 		this.rightRibbonEl = this.app.workspace.rightRibbon.containerEl;
 		this.contentEl = document.getElementsByClassName('view-content')[0] as HTMLElement;
-		this.titleBarEl = document.getElementsByClassName('view-header-title-container')[0] as HTMLElement;
+		this.noteTitleEl = document.getElementsByClassName('view-header-title-container')[0] as HTMLElement;
 	}
 
 	registerEvents() {
-		// Click rootSplit to collapse all.
+		// Click on the contentEl to collapse both sidebars.
 		this.registerDomEvent(this.contentEl, 'click', (evt: MouseEvent) => {
 			this.leftSplit.collapse();
 			this.rightSplit.collapse();		
 		});
 
-		// Click leftRibbon to expand leftSplit (Optional).
+		// Click on the blank area of leftRibbonEl to expand the left sidebar (Optional).
 		this.registerDomEvent(this.leftRibbonEl, 'click', (evt: MouseEvent) => {
-			if(this.settings.openLeftSplitOnClickSideBar){
-				if(evt.target.ariaLabel == null){ // =サイドバー内のボタンを押している場合は実行しない
-					this.leftSplit.expand();
+			if(this.settings.expandSidebar_onClickRibbon){
+				if(evt.target.ariaLabel == null){ // If clicked on the blank area, this property will be null. MAYBE.
+					if(this.leftSplit.collapsed == true) this.leftSplit.expand();
 				}
 			}
 		});
-		// Click rightRibbon to expand rightSplit (Optional).
+		// Click on the blank area of rightRibbonEl to expand the right sidebar (Optional).
 		this.registerDomEvent(this.rightRibbonEl, 'click', (evt: MouseEvent) => {
-			if(this.settings.openLeftSplitOnClickSideBar){
-				if(evt.target.ariaLabel == null){ // =サイドバー内のボタンを押している場合は実行しない
-					this.rightSplit.expand();
+			if(this.settings.expandSidebar_onClickRibbon){
+				if(evt.target.ariaLabel == null){
+					if(this.rightSplit.collapsed == true) this.rightSplit.expand();
 				}
 			}
 		});
-
-		// Click titleBar to expand leftSplit (Optional).
-		this.registerDomEvent(this.titleBarEl, 'click', (evt: MouseEvent) => {
-			if(this.settings.openLeftSplitOnClickTitleBar){
-				this.leftSplit.expand();
+		// Click on the note title to expand the left sidebar (Optional).
+		this.registerDomEvent(this.noteTitleEl, 'click', (evt: MouseEvent) => {
+			if(this.settings.expandSidebar_onClickNoteTitle){
+				if(this.leftSplit.collapsed == true) this.leftSplit.expand();
 			}
 		});
 	}
@@ -103,23 +99,21 @@ class SampleSettingTab extends PluginSettingTab {
 		containerEl.createEl('h2', {text: 'Settings for Auto Hide plugin.'});
 
 		new Setting(containerEl)
-			.setName('Click sidebar to expand')
-			.setDesc('When you clicked the left ribbon bar, then left sidebar expand')
+			.setName('Expand the sidebar with a ribbon')
+			.setDesc('Click on the blank area of ribbon to expand the sidebar.')
 			.addToggle(toggle => toggle
-				.setValue(this.plugin.settings.openLeftSplitOnClickSideBar)
+				.setValue(this.plugin.settings.expandSidebar_onClickRibbon)
 				.onChange(async (value) => {
-					console.log('asyncyncyn!');
-					this.plugin.settings.openLeftSplitOnClickSideBar = value;
+					this.plugin.settings.expandSidebar_onClickRibbon = value;
 					await this.plugin.saveSettings();
 				}));
 		new Setting(containerEl)
-			.setName('Click titlebar to expand sidebar')
-			.setDesc('When you clicked the left ribbon bar, then left sidebar expand')
+			.setName('Expand the sidebar with a note title')
+			.setDesc('Click on the note title to expand the left sidebar.')
 			.addToggle(toggle => toggle
-				.setValue(this.plugin.settings.openLeftSplitOnClickTitleBar)
+				.setValue(this.plugin.settings.expandSidebar_onClickNoteTitle)
 				.onChange(async (value) => {
-					console.log('asyncyncyn!');
-					this.plugin.settings.openLeftSplitOnClickTitleBar = value;
+					this.plugin.settings.expandSidebar_onClickNoteTitle = value;
 					await this.plugin.saveSettings();
 				}));
 	}
