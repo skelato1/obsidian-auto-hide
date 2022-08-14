@@ -61,7 +61,6 @@ export default class AutoHidePlugin extends Plugin {
 		// Click on the blank area of leftRibbonEl to expand the left sidebar (Optional).
 		this.registerDomEvent(this.leftRibbonEl, 'click', (evt: MouseEvent) => {
 			if(this.settings.expandSidebar_onClickRibbon){
-				console.log(evt);
 				if(evt.target ==  this.leftRibbonEl){
 					if(this.leftSplit.collapsed == true) this.leftSplit.expand();
 				}
