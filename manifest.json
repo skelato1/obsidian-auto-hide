@@ -5,6 +5,6 @@
 	"minAppVersion": "0.15.0",
 	"description": "Hide sidebars automatically when clicked editor/viewer panel.",
 	"author": "skelato1",
-	"authorUrl": "https://obsidian.md",
+	"authorUrl": "https://github.com/skelato1",
 	"isDesktopOnly": true
 }
