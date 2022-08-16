@@ -14,10 +14,9 @@ export default class AutoHidePlugin extends Plugin {
 	settings: AutoHideSettings;
 	leftSplit: WorkspaceSidedock;
 	rightSplit: WorkspaceSidedock;
+	rootSplitEl: HTMLElement;
 	leftRibbonEl: HTMLElement;
 	rightRibbonEl: HTMLElement;
-	contentEl: HTMLElement;
-	noteTitleEl: HTMLElement;
 
 	async onload() {
 		await this.loadSettings();
@@ -29,15 +28,15 @@ export default class AutoHidePlugin extends Plugin {
 			this.registerEvents();
 		})
 	}
-	
+
 	onunload() {
 
 	}
-	
+
 	async loadSettings() {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
 	}
-	
+
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
@@ -45,39 +44,41 @@ export default class AutoHidePlugin extends Plugin {
 	init() {
 		this.leftSplit = this.app.workspace.leftSplit;
 		this.rightSplit = this.app.workspace.rightSplit;
+		this.rootSplitEl = (this.app.workspace.rootSplit as any).containerEl;
 		this.leftRibbonEl = (this.app.workspace.leftRibbon as any).containerEl;
 		this.rightRibbonEl = (this.app.workspace.rightRibbon as any).containerEl;
-		this.contentEl = document.getElementsByClassName('view-content')[0] as HTMLElement;
-		this.noteTitleEl = document.getElementsByClassName('view-header-title-container')[0] as HTMLElement;
 	}
 
 	registerEvents() {
-		// Click on the contentEl to collapse both sidebars.
-		this.registerDomEvent(this.contentEl, 'click', (evt: MouseEvent) => {
-			this.leftSplit.collapse();
-			this.rightSplit.collapse();		
+		this.registerDomEvent(this.rootSplitEl, 'click', (evt: any) => {
+			const contentEl = (this.app.workspace.getLeaf().view as any).contentEl;
+			const titlecontainerEl = (this.app.workspace.getLeaf().view as any).titleContainerEl;
+
+			if (evt.path.contains(contentEl)) { // Click on the contentEl to collapse both sidebars.
+				this.leftSplit.collapse();
+				this.rightSplit.collapse();
+			} else if (evt.path.contains(titlecontainerEl)) { // Click on the note title to expand the left sidebar (Optional).
+				if (this.settings.expandSidebar_onClickNoteTitle) {
+					if (this.leftSplit.collapsed == true) this.leftSplit.expand();
+				}
+			}
 		});
 
 		// Click on the blank area of leftRibbonEl to expand the left sidebar (Optional).
 		this.registerDomEvent(this.leftRibbonEl, 'click', (evt: MouseEvent) => {
-			if(this.settings.expandSidebar_onClickRibbon){
-				if(evt.target ==  this.leftRibbonEl){
-					if(this.leftSplit.collapsed == true) this.leftSplit.expand();
+			if (this.settings.expandSidebar_onClickRibbon) {
+				if (evt.target == this.leftRibbonEl) {
+					if (this.leftSplit.collapsed == true) this.leftSplit.expand();
 				}
 			}
 		});
+
 		// Click on the blank area of rightRibbonEl to expand the right sidebar (Optional).
 		this.registerDomEvent(this.rightRibbonEl, 'click', (evt: MouseEvent) => {
-			if(this.settings.expandSidebar_onClickRibbon){
-				if(evt.target == this.rightRibbonEl){
-					if(this.rightSplit.collapsed == true) this.rightSplit.expand();
+			if (this.settings.expandSidebar_onClickRibbon) {
+				if (evt.target == this.rightRibbonEl) {
+					if (this.rightSplit.collapsed == true) this.rightSplit.expand();
 				}
-			}
-		});
-		// Click on the note title to expand the left sidebar (Optional).
-		this.registerDomEvent(this.noteTitleEl, 'click', (evt: MouseEvent) => {
-			if(this.settings.expandSidebar_onClickNoteTitle){
-				if(this.leftSplit.collapsed == true) this.leftSplit.expand();
 			}
 		});
 	}
@@ -92,11 +93,11 @@ class SampleSettingTab extends PluginSettingTab {
 	}
 
 	display(): void {
-		const {containerEl} = this;
+		const { containerEl } = this;
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', {text: 'Settings for Auto Hide plugin.'});
+		containerEl.createEl('h2', { text: 'Settings for Auto Hide plugin.' });
 
 		new Setting(containerEl)
 			.setName('Expand the sidebar with a ribbon')
