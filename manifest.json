@@ -1,10 +1,10 @@
 {
-	"id": "obsidian-sample-plugin",
-	"name": "Sample Plugin",
-	"version": "1.0.0",
+	"id": "obsidian-auto-hide",
+	"name": "Auto Hide",
+	"version": "0.2.2",
 	"minAppVersion": "0.15.0",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"isDesktopOnly": false
+	"description": "Collapse sidebars when clicking on the editor/viewer panel",
+	"author": "skelato1",
+	"authorUrl": "https://github.com/skelato1",
+	"isDesktopOnly": true
 }
