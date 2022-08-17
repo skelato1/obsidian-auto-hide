@@ -55,8 +55,10 @@ export default class AutoHidePlugin extends Plugin {
 			const titlecontainerEl = (this.app.workspace.getLeaf().view as any).titleContainerEl;
 
 			if (evt.path.contains(contentEl)) { // Click on the contentEl to collapse both sidebars.
-				this.leftSplit.collapse();
-				this.rightSplit.collapse();
+				if (!(evt.target.classList.contains("cm-hashtag") || evt.target.classList.contains("tag"))) {
+					this.leftSplit.collapse();
+					this.rightSplit.collapse();
+				}
 			} else if (evt.path.contains(titlecontainerEl)) { // Click on the note title to expand the left sidebar (Optional).
 				if (this.settings.expandSidebar_onClickNoteTitle) {
 					if (this.leftSplit.collapsed == true) this.leftSplit.expand();
