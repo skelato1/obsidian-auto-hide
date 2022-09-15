@@ -21,7 +21,7 @@ export default class AutoHidePlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new AutoHideSettingTab(this.app, this));
 
 		this.app.workspace.onLayoutReady(() => {
 			this.init();
@@ -84,7 +84,7 @@ export default class AutoHidePlugin extends Plugin {
 	}
 }
 
-class SampleSettingTab extends PluginSettingTab {
+class AutoHideSettingTab extends PluginSettingTab {
 	plugin: AutoHidePlugin;
 
 	constructor(app: App, plugin: AutoHidePlugin) {
