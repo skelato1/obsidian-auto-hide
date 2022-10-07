@@ -57,7 +57,6 @@ export default class AutoHidePlugin extends Plugin {
 
 	registerEvents() {
 		this.registerDomEvent(this.rootSplitEl, 'click', (evt: any) => {
-
 			if (evt.target.classList.contains("view-header-title")) { // Click on the note title to expand the left sidebar (Optional).
 				if (this.settings.expandSidebar_onClickNoteTitle) {
 					if (this.leftSplit.collapsed == true) this.leftSplit.expand();
@@ -107,7 +106,7 @@ export default class AutoHidePlugin extends Plugin {
 		const lb = new ButtonComponent(tabHeaderContainers[0] as HTMLElement)
 			.setIcon("pin")
 			.setClass("auto-hide-button")
-			.onClick((evt: any) => {
+			.onClick(() => {
 				document.getElementsByClassName("auto-hide-button")[0].classList.toggle("is-active");
 				this.leftPin = !this.leftPin;
 				if (this.leftPin) {
@@ -116,11 +115,11 @@ export default class AutoHidePlugin extends Plugin {
 					lb.setIcon("pin");
 				}
 			});
-			
-			const rb = new ButtonComponent(tabHeaderContainers[1] as HTMLElement)
+
+		const rb = new ButtonComponent(tabHeaderContainers[1] as HTMLElement)
 			.setIcon("pin")
 			.setClass("auto-hide-button")
-			.onClick((evt: any) => {
+			.onClick(() => {
 				document.getElementsByClassName("auto-hide-button")[1].classList.toggle("is-active");
 				this.rightPin = !this.rightPin;
 				if (this.rightPin) {
@@ -134,15 +133,12 @@ export default class AutoHidePlugin extends Plugin {
 	removePins() {
 		const pins = document.getElementsByClassName("auto-hide-button");
 		while (pins.length) {
-			console.log(pins.item(0), "removing!")
 			if (pins.item(0) != null) {
 				pins[0].remove();
 			}
 		}
-
 	}
 }
-
 
 class AutoHideSettingTab extends PluginSettingTab {
 	plugin: AutoHidePlugin;
@@ -177,6 +173,7 @@ class AutoHideSettingTab extends PluginSettingTab {
 					this.plugin.settings.expandSidebar_onClickNoteTitle = value;
 					await this.plugin.saveSettings();
 				}));
+		containerEl.createEl('h4', { text: 'EXPERIMENTAL!' });
 		new Setting(containerEl)
 			.setName('Lock sidebar collapse')
 			.setDesc('Add a pin that can temporarily lock the sidebar collapse.')
