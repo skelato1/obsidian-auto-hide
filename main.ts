@@ -100,7 +100,7 @@ export default class AutoHidePlugin extends Plugin {
 	}
 
 	addPins() {
-		const tabHeaderContainers = this.app.workspace.containerEl.getElementsByClassName("workspace-tab-header-container");
+		const tabHeaderContainers = document.getElementsByClassName("workspace-tab-header-container");
 		this.leftPin = false;
 		this.rightPin = false;
 
@@ -108,6 +108,7 @@ export default class AutoHidePlugin extends Plugin {
 			.setIcon("pin")
 			.setClass("auto-hide-button")
 			.onClick((evt: any) => {
+				document.getElementsByClassName("auto-hide-button")[0].classList.toggle("is-active");
 				this.leftPin = !this.leftPin;
 				if (this.leftPin) {
 					lb.setIcon("filled-pin");
@@ -115,11 +116,12 @@ export default class AutoHidePlugin extends Plugin {
 					lb.setIcon("pin");
 				}
 			});
-
-		const rb = new ButtonComponent(tabHeaderContainers[1] as HTMLElement)
+			
+			const rb = new ButtonComponent(tabHeaderContainers[1] as HTMLElement)
 			.setIcon("pin")
 			.setClass("auto-hide-button")
 			.onClick((evt: any) => {
+				document.getElementsByClassName("auto-hide-button")[1].classList.toggle("is-active");
 				this.rightPin = !this.rightPin;
 				if (this.rightPin) {
 					rb.setIcon("filled-pin");
