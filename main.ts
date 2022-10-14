@@ -33,6 +33,10 @@ export default class AutoHidePlugin extends Plugin {
 			this.registerEvents();
 			this.togglePins();
 		})
+		// Reassigned when workspace is switched
+		this.app.workspace.on("layout-change", () => {
+			this.init();
+		});
 	}
 
 	onunload() {
@@ -56,7 +60,12 @@ export default class AutoHidePlugin extends Plugin {
 	}
 
 	registerEvents() {
-		this.registerDomEvent(this.rootSplitEl, 'click', (evt: any) => {
+		// Use workspace.containerEl instead of rootSplitEl to avoid removing EventListener when switching workspace
+		this.registerDomEvent(this.app.workspace.containerEl, 'click', (evt: any) => {
+			// focus to rootSplitEl
+			if(!evt.path.contains(this.rootSplitEl)) {
+				return;
+			}
 			// prevents unexpected behavior when clicking on the expand button
 			if (evt.path.some((element: HTMLElement) => element.className === "workspace-tab-header-container")) {
 				return;
@@ -72,13 +81,14 @@ export default class AutoHidePlugin extends Plugin {
 				return;
 			}
 
-			// // Click on the rootSplit() to collapse both sidebars.
+			// Click on the rootSplit() to collapse both sidebars.
 			if(!this.leftPin) {
 				this.leftSplit.collapse();
 			}
 			if(!this.rightPin) {
 				this.rightSplit.collapse();
 			}
+			
 		});
 
 		// Click on the blank area of leftRibbonEl to expand the left sidebar (Optional).
