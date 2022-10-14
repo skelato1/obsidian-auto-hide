@@ -2,10 +2,6 @@
 
 This plugin enables you to collapse (and expand) the sidebar easier.
 
-## Note
-
-⚠️ This plugin does not work well with the Insider version(0.16+) of Obsidian. https://github.com/skelato1/obsidian-auto-hide/issues/3
-
 ## Demo
 
 ![demo](https://user-images.githubusercontent.com/97661658/184786896-358e253a-d024-4d31-a33b-f200ce69e53a.gif)
