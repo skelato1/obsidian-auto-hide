@@ -4,12 +4,16 @@ interface AutoHideSettings {
 	expandSidebar_onClickRibbon: boolean;
 	expandSidebar_onClickNoteTitle: boolean;
 	lockSidebar: boolean;
+  leftPinActive: boolean;
+  rightPinActive: boolean;
 }
 
 const DEFAULT_SETTINGS: AutoHideSettings = {
 	expandSidebar_onClickRibbon: false,
 	expandSidebar_onClickNoteTitle: false,
-	lockSidebar: false
+	lockSidebar: false,
+  leftPinActive: false,
+  rightPinActive: false
 }
 
 export default class AutoHidePlugin extends Plugin {
@@ -19,9 +23,6 @@ export default class AutoHidePlugin extends Plugin {
 	rootSplitEl: HTMLElement;
 	leftRibbonEl: HTMLElement;
 	rightRibbonEl: HTMLElement;
-
-	leftPin: boolean;
-	rightPin: boolean;
 
 	async onload() {
 		await this.loadSettings();
@@ -73,10 +74,10 @@ export default class AutoHidePlugin extends Plugin {
 			}
 
 			// // Click on the rootSplit() to collapse both sidebars.
-			if(!this.leftPin) {
+			if(!this.settings.leftPinActive) {
 				this.leftSplit.collapse();
 			}
-			if(!this.rightPin) {
+			if(!this.settings.rightPinActive) {
 				this.rightSplit.collapse();
 			}
 		});
@@ -113,16 +114,16 @@ export default class AutoHidePlugin extends Plugin {
 	addPins() {
 		// tabHeaderContainers[0]=left, [2]=right. need more robust way to get these
 		const tabHeaderContainers = document.getElementsByClassName("workspace-tab-header-container");
-		this.leftPin = false;
-		this.rightPin = false;
 
 		const lb = new ButtonComponent(tabHeaderContainers[0] as HTMLElement)
 			.setIcon("pin")
 			.setClass("auto-hide-button")
-			.onClick(() => {
+			.onClick(async () => {
 				document.getElementsByClassName("auto-hide-button")[0].classList.toggle("is-active");
-				this.leftPin = !this.leftPin;
-				if (this.leftPin) {
+				this.settings.leftPinActive = !this.settings.leftPinActive;
+        await this.saveSettings();
+        
+				if (this.settings.leftPinActive) {
 					lb.setIcon("filled-pin");
 				} else {
 					lb.setIcon("pin");
@@ -132,10 +133,12 @@ export default class AutoHidePlugin extends Plugin {
 		const rb = new ButtonComponent(tabHeaderContainers[2] as HTMLElement)
 			.setIcon("pin")
 			.setClass("auto-hide-button")
-			.onClick(() => {
+			.onClick(async () => {
 				document.getElementsByClassName("auto-hide-button")[1].classList.toggle("is-active");
-				this.rightPin = !this.rightPin;
-				if (this.rightPin) {
+				this.settings.rightPinActive = !this.settings.rightPinActive;
+        await this.saveSettings();
+
+				if (this.settings.rightPinActive) {
 					rb.setIcon("filled-pin");
 				} else {
 					rb.setIcon("pin");
