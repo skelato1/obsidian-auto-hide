@@ -4,12 +4,16 @@ interface AutoHideSettings {
 	expandSidebar_onClickRibbon: boolean;
 	expandSidebar_onClickNoteTitle: boolean;
 	lockSidebar: boolean;
+	leftPinActive: boolean;
+	rightPinActive: boolean;
 }
 
 const DEFAULT_SETTINGS: AutoHideSettings = {
 	expandSidebar_onClickRibbon: false,
 	expandSidebar_onClickNoteTitle: false,
-	lockSidebar: false
+	lockSidebar: false,
+	leftPinActive: false,
+	rightPinActive: false
 }
 
 export default class AutoHidePlugin extends Plugin {
@@ -19,9 +23,6 @@ export default class AutoHidePlugin extends Plugin {
 	rootSplitEl: HTMLElement;
 	leftRibbonEl: HTMLElement;
 	rightRibbonEl: HTMLElement;
-
-	leftPin: boolean;
-	rightPin: boolean;
 
 	async onload() {
 		await this.loadSettings();
@@ -63,7 +64,7 @@ export default class AutoHidePlugin extends Plugin {
 		// Use workspace.containerEl instead of rootSplitEl to avoid removing EventListener when switching workspace
 		this.registerDomEvent(this.app.workspace.containerEl, 'click', (evt: any) => {
 			// focus to rootSplitEl
-			if(!evt.path.contains(this.rootSplitEl)) {
+			if (!evt.path.contains(this.rootSplitEl)) {
 				return;
 			}
 			// prevents unexpected behavior when clicking on the expand button
@@ -74,21 +75,22 @@ export default class AutoHidePlugin extends Plugin {
 			if (evt.target.classList.contains("cm-hashtag") || evt.target.classList.contains("tag")) {
 				return;
 			}
-			
+
 			// Click on the note title to expand the left sidebar (Optional).
-			if(evt.target.classList.contains("view-header-title") && this.settings.expandSidebar_onClickNoteTitle) {
+			if (evt.target.classList.contains("view-header-title") && this.settings.expandSidebar_onClickNoteTitle) {
 				if (this.leftSplit.collapsed == true) this.leftSplit.expand();
 				return;
 			}
 
-			// Click on the rootSplit() to collapse both sidebars.
-			if(!this.leftPin) {
+
+			// // Click on the rootSplit() to collapse both sidebars.
+			if (!this.settings.leftPinActive) {
 				this.leftSplit.collapse();
 			}
-			if(!this.rightPin) {
+			if (!this.settings.rightPinActive) {
 				this.rightSplit.collapse();
 			}
-			
+
 		});
 
 		// Click on the blank area of leftRibbonEl to expand the left sidebar (Optional).
@@ -123,16 +125,16 @@ export default class AutoHidePlugin extends Plugin {
 	addPins() {
 		// tabHeaderContainers[0]=left, [2]=right. need more robust way to get these
 		const tabHeaderContainers = document.getElementsByClassName("workspace-tab-header-container");
-		this.leftPin = false;
-		this.rightPin = false;
 
 		const lb = new ButtonComponent(tabHeaderContainers[0] as HTMLElement)
 			.setIcon("pin")
 			.setClass("auto-hide-button")
-			.onClick(() => {
+			.onClick(async () => {
 				document.getElementsByClassName("auto-hide-button")[0].classList.toggle("is-active");
-				this.leftPin = !this.leftPin;
-				if (this.leftPin) {
+				this.settings.leftPinActive = !this.settings.leftPinActive;
+				await this.saveSettings();
+
+				if (this.settings.leftPinActive) {
 					lb.setIcon("filled-pin");
 				} else {
 					lb.setIcon("pin");
@@ -142,10 +144,12 @@ export default class AutoHidePlugin extends Plugin {
 		const rb = new ButtonComponent(tabHeaderContainers[2] as HTMLElement)
 			.setIcon("pin")
 			.setClass("auto-hide-button")
-			.onClick(() => {
+			.onClick(async () => {
 				document.getElementsByClassName("auto-hide-button")[1].classList.toggle("is-active");
-				this.rightPin = !this.rightPin;
-				if (this.rightPin) {
+				this.settings.rightPinActive = !this.settings.rightPinActive;
+				await this.saveSettings();
+
+				if (this.settings.rightPinActive) {
 					rb.setIcon("filled-pin");
 				} else {
 					rb.setIcon("pin");
