@@ -111,6 +111,7 @@ export default class AutoHidePlugin extends Plugin {
 	}
 
 	addPins() {
+		// tabHeaderContainers[0]=left, [2]=right. need more robust way to get these
 		const tabHeaderContainers = document.getElementsByClassName("workspace-tab-header-container");
 		this.leftPin = false;
 		this.rightPin = false;
@@ -128,7 +129,7 @@ export default class AutoHidePlugin extends Plugin {
 				}
 			});
 
-		const rb = new ButtonComponent(tabHeaderContainers[1] as HTMLElement)
+		const rb = new ButtonComponent(tabHeaderContainers[2] as HTMLElement)
 			.setIcon("pin")
 			.setClass("auto-hide-button")
 			.onClick(() => {
