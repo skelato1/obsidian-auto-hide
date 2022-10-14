@@ -1,4 +1,4 @@
-import { App, Plugin, PluginSettingTab, Setting, WorkspaceSidedock, ButtonComponent } from 'obsidian';
+import { App, Plugin, PluginSettingTab, Setting, WorkspaceSidedock, ButtonComponent, addIcon } from 'obsidian';
 
 interface AutoHideSettings {
 	expandSidebar_onClickRibbon: boolean;
@@ -26,14 +26,17 @@ export default class AutoHidePlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
-
+		
 		this.addSettingTab(new AutoHideSettingTab(this.app, this));
-
+		
+		addIcon("oah-pin", `<g transform="matrix(.87777 .88112 -.87777 .88112 43.03 -31.116)" style="fill:none"><g transform="translate(3.0597 -.53266)" stroke="#000" stroke-linejoin="round" stroke-width="2.3821" style="fill:none"><path d="m27.884 53.709c-2.1049-8.9245 4.547-11.436 9.5283-14.888l1.5881-23.821c-7.9403-1.4888-7.9403-2.3554-7.9403-8.9328h31.761c0 6.5774 0 7.444-7.9403 8.9328l1.5881 23.821c4.9814 3.4517 11.633 5.9636 9.5283 14.888l-19.057 1.4e-5z" style="fill:none"/><path d="m43.764 53.709v33.349l3.1761 7.9403 3.1761-7.9403v-33.349" style="fill:none"/></g></g>`);
+		addIcon("oah-filled-pin", `<g transform="matrix(.87777 .88112 -.87777 .88112 43.03 -31.116)"><g transform="translate(3.0597 -.53266)" stroke="#000" stroke-linejoin="round" stroke-width="2.3821"><path d="m27.884 53.709c-2.1049-8.9245 4.547-11.436 9.5283-14.888l1.5881-23.821c-7.9403-1.4888-7.9403-2.3554-7.9403-8.9328h31.761c0 6.5774 0 7.444-7.9403 8.9328l1.5881 23.821c4.9814 3.4517 11.633 5.9636 9.5283 14.888l-19.057 1.4e-5z"/><path d="m43.764 53.709v33.349l3.1761 7.9403 3.1761-7.9403v-33.349"/></g></g>`);
+		
 		this.app.workspace.onLayoutReady(() => {
 			this.init();
 			this.registerEvents();
 			this.togglePins();
-		})
+		});
 		// Reassigned when workspace is switched
 		this.app.workspace.on("layout-change", () => {
 			this.init();
@@ -83,7 +86,6 @@ export default class AutoHidePlugin extends Plugin {
 				return;
 			}
 
-
 			// // Click on the rootSplit() to collapse both sidebars.
 			if (!this.settings.leftPinActive) {
 				this.leftSplit.collapse();
@@ -91,7 +93,6 @@ export default class AutoHidePlugin extends Plugin {
 			if (!this.settings.rightPinActive) {
 				this.rightSplit.collapse();
 			}
-
 		});
 
 		// Click on the blank area of leftRibbonEl to expand the left sidebar (Optional).
@@ -130,7 +131,7 @@ export default class AutoHidePlugin extends Plugin {
 		const tabHeaderContainers = document.getElementsByClassName("workspace-tab-header-container");
 
 		const lb = new ButtonComponent(tabHeaderContainers[0] as HTMLElement)
-			.setIcon("pin")
+			.setIcon("oah-pin")
 			.setClass("auto-hide-button")
 			.onClick(async () => {
 				document.getElementsByClassName("auto-hide-button")[0].classList.toggle("is-active");
@@ -138,14 +139,14 @@ export default class AutoHidePlugin extends Plugin {
 				await this.saveSettings();
 
 				if (this.settings.leftPinActive) {
-					lb.setIcon("filled-pin");
+					lb.setIcon("oah-filled-pin");
 				} else {
-					lb.setIcon("pin");
+					lb.setIcon("oah-pin");
 				}
 			});
 
 		const rb = new ButtonComponent(tabHeaderContainers[2] as HTMLElement)
-			.setIcon("pin")
+			.setIcon("oah-pin")
 			.setClass("auto-hide-button")
 			.onClick(async () => {
 				document.getElementsByClassName("auto-hide-button")[1].classList.toggle("is-active");
@@ -153,9 +154,9 @@ export default class AutoHidePlugin extends Plugin {
 				await this.saveSettings();
 
 				if (this.settings.rightPinActive) {
-					rb.setIcon("filled-pin");
+					rb.setIcon("oah-filled-pin");
 				} else {
-					rb.setIcon("pin");
+					rb.setIcon("oah-pin");
 				}
 			});
 	}
