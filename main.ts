@@ -37,6 +37,7 @@ export default class AutoHidePlugin extends Plugin {
 		// Reassigned when workspace is switched
 		this.app.workspace.on("layout-change", () => {
 			this.init();
+			this.togglePins();
 		});
 	}
 
@@ -115,10 +116,12 @@ export default class AutoHidePlugin extends Plugin {
 	// Feature: pane locking
 
 	togglePins() {
-		if (this.settings.lockSidebar) {
-			this.addPins();
-		} else {
+		if(!this.settings.lockSidebar) {
 			this.removePins();
+			return;
+		}
+		if(document.getElementsByClassName("auto-hide-button").length == 0){
+			this.addPins();
 		}
 	}
 
