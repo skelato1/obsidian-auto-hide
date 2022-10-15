@@ -85,6 +85,10 @@ export default class AutoHidePlugin extends Plugin {
 			if (evt.target.classList.contains("cm-hashtag") || evt.target.classList.contains("tag")) {
 				return;
 			}
+			// prevents collapsing when clicking on the breadcrumb
+			if (evt.target.classList.contains("view-header-breadcrumb")) {
+				return;
+			}
 
 			// Click on the note title to expand the left sidebar (Optional).
 			if (evt.target.classList.contains("view-header-title") && this.settings.expandSidebar_onClickNoteTitle) {
