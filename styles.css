@@ -7,8 +7,3 @@
     border-radius: 5px;
     background: rgba(0, 0, 0, 0);
 }
-
-.auto-hide-button.is-active {
-    border: 1px solid #555555;
-    background-color: rgba(0, 0, 0, 0.05);
-}
