@@ -74,11 +74,11 @@ export default class AutoHidePlugin extends Plugin {
 		// Use workspace.containerEl instead of rootSplitEl to avoid removing EventListener when switching workspace
 		this.registerDomEvent(this.app.workspace.containerEl, 'click', (evt: any) => {
 			// focus to rootSplitEl
-			if (!evt.path.contains(this.rootSplitEl)) {
+			if (!this.rootSplitEl.contains(evt.target)) {
 				return;
 			}
 			// prevents unexpected behavior when clicking on the expand button
-			if (evt.path.some((element: HTMLElement) => element.className === "workspace-tab-header-container")) {
+			if(evt.target.closest(".workspace-tab-header-container") !== null) {
 				return;
 			}
 			// prevents unexpected behavior when clicking on the tag
