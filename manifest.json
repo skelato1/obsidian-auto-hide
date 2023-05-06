@@ -1,7 +1,7 @@
 {
 	"id": "obsidian-auto-hide",
 	"name": "Auto Hide",
-	"version": "0.4.4",
+	"version": "0.4.5",
 	"minAppVersion": "0.15.0",
 	"description": "Collapse sidebars when clicking on the editor/viewer panel",
 	"author": "skelato1",
