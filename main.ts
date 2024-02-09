@@ -73,6 +73,7 @@ export default class AutoHidePlugin extends Plugin {
 	registerEvents() {
 		// Use workspace.containerEl instead of rootSplitEl to avoid removing EventListener when switching workspace
 		this.registerDomEvent(this.app.workspace.containerEl, 'click', (evt: any) => {
+			console.log(evt);
 			// focus to rootSplitEl
 			if (!this.rootSplitEl.contains(evt.target)) {
 				return;
@@ -83,6 +84,10 @@ export default class AutoHidePlugin extends Plugin {
 			}
 			// prevents unexpected behavior when clicking on the tag
 			if (evt.target.classList.contains("cm-hashtag") || evt.target.classList.contains("tag")) {
+				return;
+			}
+			// prevents unexpected behavior when clicking on the tag in the yaml front matter
+			if (evt.target.closest(".multi-select-pill-content") !== null) {
 				return;
 			}
 			// prevents collapsing when clicking on the breadcrumb
