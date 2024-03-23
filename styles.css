@@ -1,8 +1,15 @@
 .auto-hide-button {
     display: flex;
-    margin: 6px 6px 0 auto;
-    padding: 6px 6px;
+    margin: 7px 6px 0 auto;
+    padding: 8px 8px;
     height: 26px;
     border-radius: 5px;
     background: rgba(0, 0, 0, 0);
+	box-shadow: none !important;
+	background-color: inherit !important;
+	color: var(--icon-color) !important;
+}
+
+.auto-hide-button:hover {
+	background-color: var(--background-modifier-hover) !important;
 }
